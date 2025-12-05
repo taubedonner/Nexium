@@ -1,4 +1,4 @@
-find_program(PYTHON_EXECUTABLE python3 REQUIRED)
+find_package(Python 3 REQUIRED COMPONENTS Interpreter)
 
 function(process_shader shader_file output_file_var)
     get_filename_component(shader_name "${shader_file}" NAME)
@@ -8,10 +8,10 @@ function(process_shader shader_file output_file_var)
     add_custom_command(
         OUTPUT "${output_file}"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/generated/include/shaders"
-        COMMAND "${PYTHON_EXECUTABLE}" "${NX_ROOT_PATH}/scripts/glsl_processor.py" 
+        COMMAND "${Python_EXECUTABLE}" "${NX_ROOT_PATH}/scripts/glsl_processor.py"
                 "${shader_file}" "${CMAKE_CURRENT_BINARY_DIR}/shader_${shader_name}.tmp"
                 --compress
-        COMMAND "${PYTHON_EXECUTABLE}" "${NX_ROOT_PATH}/scripts/bin2c.py" 
+        COMMAND "${Python_EXECUTABLE}" "${NX_ROOT_PATH}/scripts/bin2c.py"
                 --file "${CMAKE_CURRENT_BINARY_DIR}/shader_${shader_name}.tmp" 
                 --name "${shader_name}" --mode binary "${output_file}"
         COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_CURRENT_BINARY_DIR}/shader_${shader_name}.tmp"
