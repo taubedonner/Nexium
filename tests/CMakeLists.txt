@@ -33,23 +33,22 @@ add_hyperion_test("nx-lights" "${NX_ROOT_PATH}/tests/lights.c")
 add_hyperion_test("nx-pbr" "${NX_ROOT_PATH}/tests/pbr.c")
 
 if(WIN32)
-    set(vendored_dirs
-        "${CMAKE_BINARY_DIR}/external/SDL"
-        "${CMAKE_BINARY_DIR}/external/physfs"
-        "${CMAKE_BINARY_DIR}/external/freetype"
-        "${CMAKE_BINARY_DIR}/external/assimp"
-    )
-    foreach(dir IN LISTS vendored_dirs)
-        if(EXISTS "${dir}")
-            file(GLOB_RECURSE dll_files "${dir}/*.dll")
-            foreach(dll_file ${dll_files})
-                add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                            "${dll_file}"
-                            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-                    COMMENT "Copying ${dll_file}"
-                )
-            endforeach()
+    foreach(lib IN LISTS NX_EXTERNAL_LIBS)
+        if(NOT TARGET ${lib})
+            continue()
         endif()
+
+        get_target_property(lib_type ${lib} TYPE)
+        if(NOT lib_type STREQUAL "SHARED_LIBRARY")
+            continue()
+        endif()
+
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "$<TARGET_FILE:${lib}>"
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+                VERBATIM
+                COMMENT "Copying $<TARGET_FILE_NAME:${lib}> from ${lib}"
+        )
     endforeach()
 endif()
