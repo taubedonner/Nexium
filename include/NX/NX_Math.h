@@ -3508,7 +3508,8 @@ NXAPI NX_Transform NX_TransformLerp(const NX_Transform* a, const NX_Transform* b
 
 #if defined(__cplusplus)
 
-#include <string.h> // memcmp
+#include <cmath>
+#include <cstring> // memcmp
 
 /* === Addition Operators === */
 

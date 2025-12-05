@@ -15,6 +15,7 @@
 #include <glad/gles2.h>
 
 #include <utility>
+#include <type_traits>
 
 namespace gpu {
 
