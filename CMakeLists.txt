@@ -123,6 +123,10 @@ if(NX_ZLIB_VENDORED)
     list(APPEND NX_EXTERNAL_INSTALL_TARGETS "zlibstatic")
     list(APPEND NX_EXTERNAL_LIBS "zlibstatic")
 
+    # Substitution of Assimp variables to deceive libraries dependent on it
+    set(ZLIB_FOUND TRUE CACHE BOOL "" FORCE)
+    set(ZLIB_INCLUDE_DIR "${NX_ROOT_PATH}/external/zlib" CACHE PATH "" FORCE)
+    set(ZLIB_LIBRARIES zlibstatic CACHE STRING "" FORCE)
 else()
     find_package(ZLIB REQUIRED)
     list(APPEND NX_EXTERNAL_LIBS ZLIB::ZLIB)
@@ -169,12 +173,16 @@ endif()
 # Configure FreeType
 
 if(NX_FREETYPE_VENDORED)
+    if(NX_ZLIB_VENDORED)
+        set(FT_DISABLE_ZLIB OFF CACHE BOOL "" FORCE)
+    else()
+        set(FT_DISABLE_ZLIB ON CACHE BOOL "")
+    endif()
 
-    set(FT_DISABLE_ZLIB                 ON CACHE BOOL "")
-    set(FT_DISABLE_BZIP2                ON CACHE BOOL "")
-    set(FT_DISABLE_PNG                  ON CACHE BOOL "")
-    set(FT_DISABLE_HARFBUZZ             ON CACHE BOOL "")
-    set(FT_DISABLE_BROTLI               ON CACHE BOOL "")
+    set(FT_DISABLE_BZIP2    ON CACHE BOOL "")
+    set(FT_DISABLE_PNG      ON CACHE BOOL "")
+    set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")
+    set(FT_DISABLE_BROTLI   ON CACHE BOOL "")
 
     add_subdirectory("${NX_ROOT_PATH}/external/freetype")
 
@@ -251,11 +259,6 @@ if(NX_ASSIMP_VENDORED)
     if(NX_ZLIB_VENDORED)
         # If zlib is already provided, we tell assimp not to build it
         set(ASSIMP_BUILD_ZLIB OFF CACHE BOOL "" FORCE)
-        # And we provide the information that assimp needs to use our zlib
-        # Assimp does a find_package(ZLIB) so we "simulate" a result
-        set(ZLIB_FOUND TRUE CACHE BOOL "" FORCE)
-        set(ZLIB_INCLUDE_DIR "${NX_ROOT_PATH}/external/zlib" CACHE PATH "" FORCE)
-        set(ZLIB_LIBRARIES zlibstatic CACHE STRING "" FORCE)
     endif()
 
     add_subdirectory("${NX_ROOT_PATH}/external/assimp")
@@ -263,7 +266,7 @@ if(NX_ASSIMP_VENDORED)
     list(APPEND NX_EXTERNAL_INSTALL_TARGETS "assimp")
     list(APPEND NX_EXTERNAL_LIBS "assimp")
 
-elseif()
+else()
     find_package(assimp REQUIRED)
     list(APPEND NX_EXTERNAL_LIBS "assimp::assimp")
 endif()
