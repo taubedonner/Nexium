@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 project(nexium VERSION 0.1.0 LANGUAGES C CXX)
 
+if (APPLE)
+    enable_language(OBJC OBJCXX)
+endif ()
+
 # Used language standards
 
 set(CMAKE_C_STANDARD 11)
@@ -158,17 +162,12 @@ if(NX_PHYSFS_VENDORED)
 
     add_subdirectory("${NX_ROOT_PATH}/external/physfs")
 
-    set_target_properties(physfs PROPERTIES
-        COMPILE_OPTIONS "-D_POSIX_C_SOURCE=200809L"
-    )
-
-    list(APPEND NX_EXTERNAL_INSTALL_TARGETS "physfs")
-    list(APPEND NX_EXTERNAL_LIBS "physfs")
-
+    list(APPEND NX_EXTERNAL_INSTALL_TARGETS "PhysFS::PhysFS")
 else()
     find_package(PhysFS REQUIRED)
-    list(APPEND NX_EXTERNAL_LIBS "PhysFS::PhysFS")
 endif()
+
+list(APPEND NX_EXTERNAL_LIBS "PhysFS::PhysFS")
 
 # Configure FreeType
 
