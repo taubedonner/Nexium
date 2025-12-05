@@ -162,6 +162,14 @@ if(NX_PHYSFS_VENDORED)
 
     add_subdirectory("${NX_ROOT_PATH}/external/physfs")
 
+    if(UNIX AND NOT APPLE)
+        foreach(physfs_tgt physfs-shared physfs-static)
+            if(TARGET ${physfs_tgt})
+                target_compile_definitions(${physfs_tgt} PRIVATE _POSIX_C_SOURCE=200809L)
+            endif()
+        endforeach()
+    endif()
+
     list(APPEND NX_EXTERNAL_INSTALL_TARGETS "PhysFS::PhysFS")
 else()
     find_package(PhysFS REQUIRED)
