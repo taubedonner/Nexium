@@ -84,6 +84,12 @@ if(NX_SDL3_VENDORED)
     set(SDL_JOYSTICK        ON CACHE BOOL "")
     set(SDL_OPENGL          ON CACHE BOOL "")
 
+    if(ANDROID)
+        set(SDL_OPENGLES    ON CACHE BOOL "")
+    else()
+        set(SDL_OPENGLES    OFF CACHE BOOL "")
+    endif()
+
     set(SDL_DIALOG          OFF CACHE BOOL "")
     set(SDL_RENDER          OFF CACHE BOOL "")
     set(SDL_CAMERA          OFF CACHE BOOL "")
