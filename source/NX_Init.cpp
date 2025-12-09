@@ -152,9 +152,8 @@ static bool INX_DisplayState_Init(const char* title, int w, int h, const NX_AppD
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
     };
 
-#if defined(NX_PLATFORM_MACOS) || defined(NX_PLATFORM_ANDROID)
+#if defined(NX_PLATFORM_ANDROID)
     // Android always uses OpenGL ES
-    // Hopefully MacOS via ANGLE
     useOpenGLES = true;
 #else
     // Test OpenGL 4.5 support on other platforms

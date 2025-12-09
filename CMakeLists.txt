@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 project(nexium VERSION 0.1.0 LANGUAGES C CXX)
 
+if (APPLE)
+    # Required when SDL_JOYSTICK is enabled
+    enable_language(OBJC)
+endif ()
+
 # Used language standards
 
 set(CMAKE_C_STANDARD 11)
@@ -88,7 +93,6 @@ if(NX_SDL3_VENDORED)
     set(SDL_GPU             OFF CACHE BOOL "")
     set(SDL_VULKAN          OFF CACHE BOOL "")
     set(SDL_DIRECTX         OFF CACHE BOOL "")
-    set(SDL_OPENGLES        OFF CACHE BOOL "")
     set(SDL_OFFSCREEN       OFF CACHE BOOL "")
 
     add_subdirectory("${NX_ROOT_PATH}/external/SDL")
@@ -158,9 +162,9 @@ if(NX_PHYSFS_VENDORED)
 
     add_subdirectory("${NX_ROOT_PATH}/external/physfs")
 
-    set_target_properties(physfs PROPERTIES
-        COMPILE_OPTIONS "-D_POSIX_C_SOURCE=200809L"
-    )
+    if(UNIX AND NOT APPLE AND NOT ANDROID)
+        target_compile_definitions(physfs PRIVATE _POSIX_C_SOURCE=200809L)
+    endif()
 
     list(APPEND NX_EXTERNAL_INSTALL_TARGETS "physfs")
     list(APPEND NX_EXTERNAL_LIBS "physfs")
