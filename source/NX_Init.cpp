@@ -63,18 +63,19 @@ static bool INX_SDL_Init(const NX_AppDesc& desc)
         }
     }
     else if (desc.memory.malloc || desc.memory.calloc || desc.memory.realloc || desc.memory.free) {
-        NX_LOG(W, "CORE: Failed to set custom memory functions; If you define at least one memory function, they must all be defined", SDL_GetError());
+        NX_LOG(W, "CORE: Failed to set custom memory functions; If you define at least one memory function, "
+                  "they must all be defined; %s", SDL_GetError());
     }
 
     SDL_SetAppMetadata(desc.name, desc.version, desc.identifier);
 
     if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
-        NX_LogF("CORE: Failed to init video subsystem; ", SDL_GetError());
+        NX_LogF("CORE: Failed to init video subsystem; %s", SDL_GetError());
         return false;
     }
 
     if (!SDL_InitSubSystem(SDL_INIT_GAMEPAD)) {
-        NX_LogW("CORE: Failed to init gamepad subsystem; ", SDL_GetError());
+        NX_LogW("CORE: Failed to init gamepad subsystem; %s", SDL_GetError());
     }
 
 #ifndef NDEBUG
@@ -196,7 +197,7 @@ static bool INX_DisplayState_Init(const char* title, int w, int h, const NX_AppD
 
     INX_Display.window = SDL_CreateWindow(title, w, h, SDL_WINDOW_OPENGL | INX_GetWindowFlags(desc.flags));
     if (INX_Display.window == nullptr) {
-        NX_LogF("CORE: Failed to create window; ", SDL_GetError());
+        NX_LogF("CORE: Failed to create window; %s", SDL_GetError());
         return false;
     }
 
@@ -206,7 +207,7 @@ static bool INX_DisplayState_Init(const char* title, int w, int h, const NX_AppD
 
     INX_Display.glContext = SDL_GL_CreateContext(INX_Display.window);
     if (INX_Display.glContext == nullptr) {
-        NX_LogF("CORE: Failed to create OpenGL context; ", SDL_GetError());
+        NX_LogF("CORE: Failed to create OpenGL context; %s", SDL_GetError());
         return false;
     }
 
